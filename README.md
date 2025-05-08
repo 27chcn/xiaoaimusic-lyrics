@@ -3,18 +3,27 @@
 一个实时显示小爱音箱播放歌曲歌词的网页
 
 ## 更新日志
+
 2025.5.8
+
 - 实时显示当前播放歌曲信息
 - 同步显示歌词
 - 显示播放进度
 - 自动滚动歌词
-![样式图1](https://github.com/27chcn/xiaoaimusic-lyrics/blob/main/%E6%A0%B7%E5%BC%8F/%E6%A0%B7%E5%BC%8F1.png)
+  ![样式图1](https://github.com/27chcn/xiaoaimusic-lyrics/blob/main/%E6%A0%B7%E5%BC%8F/%E6%A0%B7%E5%BC%8F1.png)
 
 2025.5.9
+
 - 将上下部分调整为左右布局
 - 封面专辑旋转效果
 - 全局主题切换颜色
-![样式图2](https://github.com/27chcn/xiaoaimusic-lyrics/blob/main/%E6%A0%B7%E5%BC%8F/%E6%A0%B7%E5%BC%8F2.png)
+  ![样式图2](https://github.com/27chcn/xiaoaimusic-lyrics/blob/main/%E6%A0%B7%E5%BC%8F/%E6%A0%B7%E5%BC%8F2.png)
+
+#### 开发计划
+
+- [ ] 上/下一首切换
+- [ ] 播放/暂停
+- [ ] 搜索点歌
 
 
 ## 安装
@@ -22,6 +31,7 @@
 1. 确保已安装 Node.js (推荐 v16 或更高版本)
 2. 克隆此仓库
 3. 安装依赖：
+
 ```bash
 npm install
 ```
@@ -37,11 +47,13 @@ npm install
 ## 运行
 
 1. 启动服务器：
+
 ```bash
 npm start
 ```
 
 2. 在浏览器中访问：
+
 ```
 http://localhost:3000
 ```
@@ -49,6 +61,7 @@ http://localhost:3000
 ## 开发
 
 使用以下命令启动开发模式（支持热重载）：
+
 ```bash
 npm run dev
 ```
