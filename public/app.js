@@ -19,6 +19,41 @@ let lastServerUpdate = Date.now(); // 上次服务器更新时间
 let retryCount = 0;      // 重试次数
 const MAX_RETRIES = 5;   // 最大重试次数
 
+// 主题切换功能
+const themes = ['theme-blue', 'theme-yellow', 'theme-green'];
+let currentThemeIndex = 0;
+
+document.querySelector('.theme-toggle').addEventListener('click', () => {
+    // 移除当前主题
+    document.body.classList.remove(themes[currentThemeIndex]);
+    
+    // 更新主题索引
+    currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+    
+    // 添加新主题
+    document.body.classList.add(themes[currentThemeIndex]);
+    
+    // 更新背景颜色
+    const themeColors = {
+        'theme-blue': {
+            gradient: 'linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%)',
+            activeColor: '#0288d1'
+        },
+        'theme-yellow': {
+            gradient: 'linear-gradient(135deg, #fffde7 0%, #fff9c4 100%)',
+            activeColor: '#f57f17'
+        },
+        'theme-green': {
+            gradient: 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)',
+            activeColor: '#2e7d32'
+        }
+    };
+    
+    const currentTheme = themes[currentThemeIndex];
+    document.body.style.background = themeColors[currentTheme].gradient;
+    document.documentElement.style.setProperty('--active-lyric-color', themeColors[currentTheme].activeColor);
+});
+
 // Format time from milliseconds to MM:SS
 function formatTime(ms) {
     const totalSeconds = Math.floor(ms / 1000);
@@ -158,17 +193,16 @@ function updateLyrics(currentTime) {
         `).join('');
         
         // 获取容器和歌词行的高度
-        const containerHeight = document.querySelector('.lyrics-container').clientHeight;
+        const containerHeight = document.querySelector('.right-section').clientHeight;
         const liHeight = lyricsContainer.children[0].clientHeight;
         
-        // 计算最大偏移量
-        const maxOffset = lyricsContainer.scrollHeight - containerHeight;
-        
-        // 计算当前歌词的偏移量
+        // 计算当前歌词的偏移量，使其居中
         let offset = liHeight * currentLyricIndex - containerHeight / 2 + liHeight / 2;
         
         // 限制偏移量范围
-        offset = Math.max(0, Math.min(offset, maxOffset));
+        const minOffset = 0;
+        const maxOffset = lyricsContainer.scrollHeight - containerHeight;
+        offset = Math.max(minOffset, Math.min(offset, maxOffset));
         
         // 使用 transform 实现滚动
         lyricsContainer.style.transform = `translateY(-${offset}px)`;
@@ -181,6 +215,32 @@ function resetLyricsScroll() {
         lyricsContainer.style.transform = 'translateY(0)';
         currentLyricIndex = -1;
     });
+}
+
+// 生成浅色背景
+function generateLightColor() {
+    // 生成浅色系的 HSL 颜色
+    const hue = Math.floor(Math.random() * 360); // 随机色相
+    const saturation = Math.floor(Math.random() * 20) + 10; // 10-30% 的饱和度
+    const lightness = Math.floor(Math.random() * 20) + 80; // 80-100% 的亮度
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+
+// 生成对应的深色
+function generateDarkColor(lightColor) {
+    // 从 HSL 字符串中提取色相
+    const hue = lightColor.match(/hsl\((\d+)/)[1];
+    // 返回相同色相的深色
+    return `hsl(${hue}, 30%, 20%)`;
+}
+
+// 更新背景和歌词颜色
+function updateColors(lightColor) {
+    const darkColor = generateDarkColor(lightColor);
+    document.body.style.background = `linear-gradient(135deg, ${lightColor} 0%, ${lightColor} 100%)`;
+    
+    // 更新 CSS 变量
+    document.documentElement.style.setProperty('--active-lyric-color', darkColor);
 }
 
 // Handle WebSocket events
@@ -210,6 +270,12 @@ socket.on('songUpdate', (data) => {
         songTitle.textContent = data.songInfo.name;
         artistName.textContent = data.songInfo.artistName;
         coverImg.src = data.songInfo.cover || 'default-cover.jpg';
+        
+        // 如果是新歌曲，更新背景颜色
+        if (isNewSong) {
+            const newLightColor = generateLightColor();
+            updateColors(newLightColor);
+        }
     }
     
     // Update progress
@@ -217,6 +283,14 @@ socket.on('songUpdate', (data) => {
     lastPosition = data.currentTime;
     isPlaying = data.status === 1;
     lastServerUpdate = Date.now();
+    
+    // 控制专辑封面旋转
+    const albumArt = document.querySelector('.album-art');
+    if (isPlaying) {
+        albumArt.classList.add('playing');
+    } else {
+        albumArt.classList.remove('playing');
+    }
     
     updateProgress(data.currentTime, data.duration);
     
