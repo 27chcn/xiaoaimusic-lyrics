@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小爱音箱歌词显示</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="player-card">
+            <div class="album-art">
+                <img id="cover" src="default-cover.jpg" alt="专辑封面">
+            </div>
+            <div class="song-info">
+                <h1 id="song-title">等待播放...</h1>
+                <p id="artist">-</p>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+                <div class="time-info">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+            <div class="lyrics-container">
+                <ul id="lyrics"></ul>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 

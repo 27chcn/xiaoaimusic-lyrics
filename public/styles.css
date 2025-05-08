@@ -1,0 +1,138 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.player-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.album-art {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.album-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.song-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.song-info h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.song-info p {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.progress-bar {
+    background: rgba(255, 255, 255, 0.1);
+    height: 4px;
+    border-radius: 2px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.progress {
+    background: #1db954;
+    height: 100%;
+    border-radius: 2px;
+    width: 0;
+    transition: width 0.1s linear;
+}
+
+.time-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 8px;
+}
+
+.lyrics-container {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    margin: 20px 0;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.lyrics-wrapper {
+    position: absolute;
+    width: 100%;
+    transition: transform 0.3s ease;
+}
+
+#lyrics {
+    list-style: none;
+    transition: all 0.5s;
+    text-align: center;
+    color: #fff;
+}
+
+#lyrics li {
+    height: 40px;
+    line-height: 40px;
+    transition: all 0.5s;
+    color: #666;
+}
+
+#lyrics li.active {
+    color: #fff;
+    transform: scale(1.5);
+}
+
+/* Custom scrollbar */
+.lyrics-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.lyrics-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.lyrics-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.lyrics-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+} 
