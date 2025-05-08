@@ -19,9 +19,9 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // Configuration
-const DEVICE_ID = '7a726fde-ca1b-4b9d-a36f-37a31bb45ac2';
-const USER_ID = '2533365489';
-const COOKIE = 'serviceToken=sXEJMjSdm6MHAaBJzdchB0Gr3PAFxAZoOIMAxAJH+iFokK7hK0VU0gPc4lf66K5WYpulNvGRso4D1J+vrgwFSpMgGzcKXavS26oV9Oc058Xei/9Foy8on4KK+8joDEetR6/CnrB3vxrwXja4CaV66Mqz9D4cYZrbCHL862q1kRfQ/wvF/VESlYDxFgcppjLKtJVQbbqO2BQCv4zTXWjjAb7FVoGSJWaq55hS6mPVQPrJTZ8Wo/vYtZC8sFSexrXS; hardware=L05B; deviceId=7a726fde-ca1b-4b9d-a36f-37a31bb45ac2; userId=2533365489; phoneModel=OnePlus; instanceId=65039ef1-e61f-423e-841b-4fb71414af95; sn=31834/A4SD26822';
+const DEVICE_ID = '********-****-****-****-************';//音箱DEVICE_ID
+const USER_ID = '';//小米账号ID
+const COOKIE = 'serviceToken=';//小爱音箱（小米音箱）的COOKIE
 
 // 获取13位时间戳
 function getTimestamp() {
