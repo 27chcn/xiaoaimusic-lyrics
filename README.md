@@ -8,15 +8,18 @@
 - 同步显示歌词
 - 显示播放进度
 - 自动滚动歌词
+![样式图1](https://github.com/27chcn/xiaoaimusic-lyrics/blob/main/%E6%A0%B7%E5%BC%8F/%E6%A0%B7%E5%BC%8F1.png)
 
 2025.5.9
 - 将上下部分调整为左右布局
 - 封面专辑旋转效果
 - 全局主题切换颜色
+![样式图2](https://github.com/27chcn/xiaoaimusic-lyrics/blob/main/%E6%A0%B7%E5%BC%8F/%E6%A0%B7%E5%BC%8F2.png)
+
 
 ## 安装
 
-1. 确保已安装 Node.js (推荐 v14 或更高版本)
+1. 确保已安装 Node.js (推荐 v16 或更高版本)
 2. 克隆此仓库
 3. 安装依赖：
 ```bash
