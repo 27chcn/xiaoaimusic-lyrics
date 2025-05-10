@@ -19,13 +19,15 @@
 - 全局主题切换颜色
   ![样式图2](https://github.com/27chcn/xiaoaimusic-lyrics/blob/main/%E6%A0%B7%E5%BC%8F/%E6%A0%B7%E5%BC%8F2.png)
 
+2025.5.10
+
+- 搜索点歌
+- 音量调节
+- 点击专辑封面播放/暂停
+  ![样式图3](https://github.com/27chcn/xiaoaimusic-lyrics/blob/main/%E6%A0%B7%E5%BC%8F/%E6%A0%B7%E5%BC%8F3.png)
+
 #### 开发计划
-
-- [ ] 上/下一首切换
-- [ ] 播放/暂停
-- [ ] 搜索点歌
-- [ ] 音量调节
-
+- [ ] 上/下一首切换（其实已经写好后端,前端不想调整怕影响美观 直接喊小爱得了）
 
 ## 安装
 
