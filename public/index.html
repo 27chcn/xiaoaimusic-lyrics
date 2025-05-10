@@ -11,6 +11,10 @@
     <button class="theme-toggle" title="切换主题">🎨</button>
     <div class="container">
         <div class="left-section">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="搜索歌曲..." />
+                <div id="search-results" class="search-results"></div>
+            </div>
             <div class="album-art">
                 <img id="cover" src="default-cover.jpg" alt="专辑封面">
             </div>
@@ -27,10 +31,16 @@
             </div>
         </div>
         <div class="right-section">
-            <ul id="lyrics"></ul>
+            <div id="lyrics"></div>
+        </div>
+        <div class="volume-control">
+            <button class="volume-icon">🔊</button>
+            <div class="volume-slider">
+                <input type="range" min="0" max="100" value="50" class="volume-range">
+            </div>
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="app.js"></script>
+    <script src="/app.js"></script>
 </body>
 </html> 

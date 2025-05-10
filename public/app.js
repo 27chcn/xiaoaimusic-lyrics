@@ -340,4 +340,169 @@ socket.on('error', (error) => {
         // 可以在这里添加用户提示
         alert('连接服务器失败，请检查服务器是否运行');
     }
+});
+
+// 播放控制函数
+async function controlPlayer(action) {
+    try {
+        const response = await fetch('/api/player/control', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action })
+        });
+        
+        if (!response.ok) {
+            throw new Error('播放控制失败');
+        }
+        
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('播放控制失败:', error);
+    }
+}
+
+// 播放控制按钮事件监听器
+document.addEventListener('DOMContentLoaded', () => {
+    // 播放/暂停按钮
+    const playPauseBtn = document.querySelector('.play-pause');
+    if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                controlPlayer('pause');
+                isPlaying=false;
+            }else {
+                controlPlayer('play');
+                isPlaying=true;
+            }
+        });
+    }
+
+    // 上一首按钮
+    const prevBtn = document.querySelector('.prev');
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            controlPlayer('prev');
+        });
+    }
+
+    // 下一首按钮
+    const nextBtn = document.querySelector('.next');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            controlPlayer('next');
+        });
+    }
+
+    // 专辑封面点击事件
+    const albumArt = document.querySelector('.album-art');
+    if (albumArt) {
+        albumArt.addEventListener('click', () => {
+            const action = isPlaying ? 'pause' : 'play';
+            controlPlayer(action);
+        });
+    }
+});
+
+// 搜索功能
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+
+searchInput.addEventListener('keypress', async (e) => {
+    if (e.key === 'Enter') {
+        const query = searchInput.value.trim();
+        if (query) {
+            try {
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query })
+                });
+                
+                const data = await response.json();
+                if (data.code === 0 && data.data.songList) {
+                    // 显示搜索结果
+                    searchResults.innerHTML = data.data.songList.map(song => `
+                        <div class="search-result-item" 
+                            data-audio-id="${song.playUrl}"
+                            data-song-id="${song.originSongID}"
+                            data-duration="${song.duration}">
+                            ${song.name} - ${song.artist.name}
+                        </div>
+                    `).join('');
+                    searchResults.classList.add('active');
+                }
+            } catch (error) {
+                console.error('搜索失败:', error);
+            }
+        }
+    }
+});
+
+// 点击搜索结果
+searchResults.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-result-item');
+    if (item) {
+        const audio_id = item.dataset.audioId;
+        const id = item.dataset.songId;
+        const duration_in_ms = parseInt(item.dataset.duration);
+        console.log('播放歌曲:', { audio_id, id, duration_in_ms });
+        
+        if (!audio_id || !id) {
+            console.error('无法获取歌曲ID:', { audio_id, id });
+            return;
+        }
+        
+        // 发送播放请求到服务器
+        socket.emit('playSong', { 
+            audio_id,
+            id,
+            duration_in_ms
+        });
+        
+        // 隐藏搜索结果
+        searchResults.classList.remove('active');
+        // 清空搜索框
+        searchInput.value = '';
+    }
+});
+
+// 点击其他地方关闭搜索结果
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+        searchResults.classList.remove('active');
+    }
+});
+
+// 音量控制
+const volumeControl = document.querySelector('.volume-control');
+const volumeIcon = document.querySelector('.volume-icon');
+const volumeRange = document.querySelector('.volume-range');
+let isVolumeSliderVisible = false;
+
+volumeIcon.addEventListener('click', () => {
+    isVolumeSliderVisible = !isVolumeSliderVisible;
+    const volumeSlider = document.querySelector('.volume-slider');
+    volumeSlider.style.width = isVolumeSliderVisible ? '100px' : '0';
+});
+
+let volumeTimeout;
+volumeRange.addEventListener('input', (e) => {
+    const volume = e.target.value;
+    
+    // 防抖处理
+    clearTimeout(volumeTimeout);
+    volumeTimeout = setTimeout(() => {
+        fetch('/api/player/volume', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ volume: parseInt(volume) })
+        });
+    }, 200);
 }); 
