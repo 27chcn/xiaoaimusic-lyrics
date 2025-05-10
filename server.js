@@ -22,21 +22,20 @@ app.use(express.static('public'));
 const DEVICE_ID = '';
 const USER_ID = '';
 const COOKIE = 'serviceToken=';
-
 // 获取13位时间戳
 function getTimestamp() {
   return Date.now().toString();
 }
 
-async function getPlayStatus() {
+async function getPlayStatus(method,message) {
   try {
     const response = await axios.post(
       'https://api2.mina.xiaoaisound.com/remote/ubus',
       new URLSearchParams({
         'deviceId': DEVICE_ID,
         'path': 'mediaplayer',
-        'method': 'player_get_play_status',
-        'message': '{}',
+        'method': method,
+        'message': message,
         'requestId': getTimestamp(),
         'timestamp': getTimestamp()
       }),
@@ -105,7 +104,7 @@ io.on('connection', (socket) => {
   
   socket.on('startPolling', () => {
     interval = setInterval(async () => {
-      const playStatus = await getPlayStatus();
+      const playStatus = await getPlayStatus('player_get_play_status','{}');
       
       // 检查播放状态数据是否有效
       if (!playStatus || !playStatus.data || !playStatus.data.info) {
@@ -188,6 +187,113 @@ io.on('connection', (socket) => {
     }
     console.log('客户端已断开连接');
   });
+
+  socket.on('playSong', async (data) => {
+    try {
+        const { audio_id, id, duration_in_ms } = data;
+        const audioid = new URL(audio_id).searchParams.get('audioId');
+        const music = JSON.stringify({
+              "payload": {
+                  "audio_items": [{
+                      "item_id": {
+                          "audio_id": audioid,
+                          "cp": {
+                              "album_id": "-1",
+                              "episode_index": 0,
+                              "id": id,
+                              "name": "xiaowei"
+                          }
+                      },
+                      "offset": -1,
+                      "stream": {
+                          "authentication": true,
+                          "duration_in_ms": duration_in_ms,
+                          "offset_in_ms": 0,
+                          "redirect": false,
+                          "url": `https://resource.ai.xiaomi.com/cp_resource_locator/c/v3/ai_music_search?audioId=${audioid}`
+                      }
+                  }],
+                  "audio_type": "MUSIC",
+                  "list_params": {
+                      "listId": "-1",
+                      "loadmore_offset": 0,
+                      "origin": "xiaowei",
+                      "type": "SONGBOOK"
+                  },
+                  "needs_loadmore": false,
+                  "play_behavior": "REPLACE_ALL"
+              }
+          });
+        const message = JSON.stringify({
+              "dialog_id": "app_android_vOQADC5gVbIisP5QUeJj",
+              "loadMoreOffset": 0,
+              "media": "app_android",
+              "music": music,
+              "startOffset": 0,
+              "startaudioid": audioid
+          });
+        const response = await getPlayStatus('player_play_music',message);
+        console.log('播放歌曲成功:', response.data);
+    } catch (error) {
+        console.error('播放失败:', error);
+    }
+});
+});
+
+// 搜索接口
+app.post('/api/search', async (req, res) => {
+    try {
+        const { query } = req.body;
+        const timestamp = Date.now();
+        const requestId = Math.random().toString(36).substring(2, 15);
+        
+        const response = await axios.post(
+            'https://coreapi.mina.xiaoaisound.com/music/search',
+            new URLSearchParams({
+                'query': query,
+                'queryType': '1',
+                'offset': '0',
+                'count': '30',
+                'supportPayment': 'true',
+                'requestId': requestId,
+                'timestamp': timestamp.toString()
+            }),
+            {
+              headers: {
+                'Cookie': COOKIE
+              }
+            }
+        );
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('搜索失败:', error);
+        res.status(500).json({ error: '搜索失败' });
+    }
+});
+
+// 播放控制接口
+app.post('/api/player/control', async (req, res) => {
+    try {
+        const { action } = req.body;
+        const response = await getPlayStatus('player_play_operation','{"action":'+action+',"media":"app_android"}');
+        res.json(response.data);
+    } catch (error) {
+        console.error('播放控制失败:', error);
+        res.status(500).json({ error: '播放控制失败' });
+    }
+});
+
+// 音量控制接口
+app.post('/api/player/volume', async (req, res) => {
+    try {
+        const { volume } = req.body;
+        const response = await getPlayStatus('player_set_volume','{"volume":'+volume+',"media":"app_android"}');
+        res.json(response.data);
+    } catch (error) {
+        console.error('音量控制失败:', error);
+        res.status(500).json({ error: '音量控制失败' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
